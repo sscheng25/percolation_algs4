@@ -80,6 +80,7 @@ public class Percolation {
 
     // test client (optional)
     public static void main(String[] args) {
+        System.out.print("Please enter the length of grids:\n");
         int n = StdIn.readInt();
         Percolation perc = new Percolation(n);
 
