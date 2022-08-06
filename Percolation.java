@@ -2,18 +2,26 @@ import edu.princeton.cs.algs4.StdIn;
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 public class Percolation {
-    WeightedQuickUnionUF UF = new WeightedQuickUnionUF(3 * 3 + 2);
+    // creates n-by-n grid, with all sites initially blocked
+    private int[][] grid;
+    private int len;  // length of the grid
+    private WeightedQuickUnionUF UF;
+    private int top = 0;
+    private int bot;
 
     // convert 2d array to 1d array
     public int two2One(int row, int col) {
-        return (3 * row + col + 1);
+        return (len * row + col + 1);
     }
 
-    // creates n-by-n grid, with all sites initially blocked
-    public int[][] grid;
-
     public Percolation(int n) {
+        if (n <= 0) throw new IllegalArgumentException();
+
+        len = n;
         grid = new int[n][n];
+        bot = n * n + 1;
+        UF = new WeightedQuickUnionUF(n * n + 2);
+
         for (int i = 0; i < n; i++) {
             for (int m = 0; m < n; m++) {
                 grid[i][m] = 0;
@@ -21,10 +29,10 @@ public class Percolation {
         }
 
         for (int i = 0; i < n; i++) {
-            UF.union(0, two2One(0, i));
+            UF.union(top, two2One(0, i));
         }
         for (int i = 0; i < n; i++) {
-            UF.union(10, two2One(n - 1, i));
+            UF.union(bot, two2One(n - 1, i));
         }
 
     }
@@ -32,10 +40,14 @@ public class Percolation {
     // opens the site (row, col) if it is not open already
     public void open(int row, int col) {
         grid[row][col] = 1;
-        if (row > 1 && grid[row - 1][col] == 1) UF.union(two2One(row - 1, col), two2One(row, col));
-        if (row + 1 < 3 && grid[row + 1][col] == 1) UF.union(two2One(row + 1, col), two2One(row, col));
-        if (col + 1 < 3 && grid[row][col + 1] == 1) UF.union(two2One(row, col + 1), two2One(row, col));
-        if (col > 1 && grid[row][col - 1] == 1) UF.union(two2One(row, col - 1), two2One(row, col));
+        if (row > 0 && isOpen(row - 1, col))
+            UF.union(two2One(row - 1, col), two2One(row, col));
+        if (row + 1 < len && isOpen(row + 1, col))
+            UF.union(two2One(row + 1, col), two2One(row, col));
+        if (col + 1 < len && isOpen(row, col + 1))
+            UF.union(two2One(row, col + 1), two2One(row, col));
+        if (col > 0 && isOpen(row, col - 1))
+            UF.union(two2One(row, col - 1), two2One(row, col));
     }
 
     // is the site (row, col) open?
@@ -45,14 +57,14 @@ public class Percolation {
 
     // is the site (row, col) full?
     public boolean isFull(int row, int col) {
-        return (UF.find(two2One(row, col)) == UF.find(0));
+        return (UF.find(two2One(row, col)) == UF.find(top));
     }
 
     // returns the number of open sites
     public int numberOfOpenSites() {
         int numOpen = 0;
-        for (int i = 0; i < 3; i++) {
-            for (int m = 0; m < 3; m++) {
+        for (int i = 0; i < len; i++) {
+            for (int m = 0; m < len; m++) {
                 if (grid[i][m] == 1) {
                     numOpen++;
                 }
@@ -63,12 +75,12 @@ public class Percolation {
 
     // does the system percolate?
     public boolean percolates() {
-        return (UF.find(0) == UF.find(10));
+        return (UF.find(top) == UF.find(bot));
     }
 
     // test client (optional)
     public static void main(String[] args) {
-        int n = 3; //StdIn.readInt();
+        int n = StdIn.readInt();
         Percolation perc = new Percolation(n);
 
         while (!StdIn.isEmpty()) {
@@ -78,14 +90,16 @@ public class Percolation {
 
             if (perc.isFull(row, col)) {
                 System.out.print("FULL!\n");
-            } else {
+            }
+            else {
                 System.out.print("Not full.\n");
             }
 
             if (perc.percolates()) {
                 System.out.print("PERCOLATES!\n");
                 System.out.println("Num of Open: " + perc.numberOfOpenSites());
-            } else {
+            }
+            else {
                 System.out.print("Not percolated!\n");
                 System.out.println("Num of Open: " + perc.numberOfOpenSites());
             }
