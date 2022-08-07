@@ -1,4 +1,3 @@
-import edu.princeton.cs.algs4.StdIn;
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 public class Percolation {
@@ -63,7 +62,13 @@ public class Percolation {
 
     // is the site (row, col) full?
     public boolean isFull(int row, int col) {
-        return (uf.find(two2One(row - 1, col - 1)) == uf.find(0));
+        if (isOpen(row, col)) {
+            return (uf.find(two2One(row - 1, col - 1)) == uf.find(0));
+        }
+        else {
+            return false;
+        }
+
     }
 
     // returns the number of open sites
@@ -89,6 +94,7 @@ public class Percolation {
 
     // test client (optional)
     public static void main(String[] args) {
+        /*
         System.out.print("Please enter the length of grids:\n");
         int n = StdIn.readInt();
         Percolation perc = new Percolation(n);
@@ -114,5 +120,7 @@ public class Percolation {
                 System.out.println("Num of Open: " + perc.numberOfOpenSites());
             }
         }
+        */
+
     }
 }
