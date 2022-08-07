@@ -18,16 +18,16 @@ public class PercolationStats {
         numTrials = trials;
 
         for (int i = 0; i < trials; i++) {
-            int cOpen = 0;
+            int cOpen;
             while (!perc.percolates()) {
                 // randomly add a new seed in the grid
                 int row = StdRandom.uniform(0, n);
                 int col = StdRandom.uniform(0, n);
                 if (!perc.isOpen(row, col)) {
                     perc.open(row, col);
-                    cOpen++;
                 }
             }
+            cOpen = perc.numberOfOpenSites();
             double rOpen = cOpen * 1.0 / (n * n);
             countOpen[i] = cOpen;
             ratioOpen[i] = rOpen;
