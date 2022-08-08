@@ -68,7 +68,6 @@ public class Percolation {
         else {
             return false;
         }
-
     }
 
     // returns the number of open sites
