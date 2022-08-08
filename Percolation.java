@@ -36,7 +36,7 @@ public class Percolation {
     // opens the site (row, col) if it is not open already
     public void open(int row, int col) {
         if (row < 1 || row > len || col < 1 || col > len) {
-            throw new IndexOutOfBoundsException();
+            throw new IllegalArgumentException();
         }
 
         if (!isOpen(row, col)) {
@@ -57,11 +57,17 @@ public class Percolation {
 
     // is the site (row, col) open?
     public boolean isOpen(int row, int col) {
+        if (row < 1 || row > len || col < 1 || col > len) {
+            throw new IllegalArgumentException();
+        }
         return (grid[row - 1][col - 1]);
     }
 
     // is the site (row, col) full?
     public boolean isFull(int row, int col) {
+        if (row < 1 || row > len || col < 1 || col > len) {
+            throw new IllegalArgumentException();
+        }
         if (isOpen(row, col)) {
             return (uf.find(two2One(row - 1, col - 1)) == uf.find(0));
         }
